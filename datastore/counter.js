@@ -19,7 +19,8 @@ const readCounter = (callback) => {
   fs.readFile(exports.counterFile, (err, fileData) => {
     if (err) {
       callback(null, 0);
-    } else {
+    } else { 
+      console.log(Number(fileData, `readCounter fileData`));
       callback(null, Number(fileData));
     }
   });
@@ -38,9 +39,22 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
-  counter = counter + 1;
-  return zeroPaddedNumber(counter);
+exports.getNextUniqueId = (callback) => {
+  // check if unique id exists,
+  readCounter((err, data) => { 
+    if (err) { 
+      console.log(`error reading count`, err); 
+    } else { 
+      data ++; 
+      writeCounter(data, (err, string) => { 
+        if (err) {
+          console.log(`error writing count`, err);
+        } else {
+          callback(null, string);
+        }
+      }); 
+    }
+  });
 };
 
 
