@@ -22,6 +22,7 @@ exports.create = (text, callback) => {
           throw (err, `error writing file during create.`);
         } else {
           callback(null, { id, text });
+          // console.log(`${exports.dataDir}/${id}.txt`)
         }
       });
     }
@@ -29,6 +30,27 @@ exports.create = (text, callback) => {
 }; 
 
 exports.readAll = (callback) => {
+  let path = exports.dataDir;
+  let fileArray = [];
+
+  fs.readdir(path, (err, ids) => { 
+    if (err) { 
+      throw (err, `readdir error`); 
+    } else { 
+      for (let i = 0; i < ids.length; i++) {
+        let id = ids[i].slice(0, 5);
+        let fileObj = {
+          id: id,
+          text: id
+        }; 
+        fileArray.push(fileObj);
+      } 
+      callback(null, fileArray);
+      console.log(`read All`, fileArray);
+    }
+  });
+
+
   var data = _.map(items, (text, id) => {
     return { id, text };
   });

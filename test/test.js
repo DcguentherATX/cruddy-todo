@@ -30,7 +30,6 @@ describe('getNextUniqueId', () => {
     counter.getNextUniqueId((err, id) => {
       expect(err).to.be.null;
       expect(id).to.exist;
-      // console.log(id);
       done();
     });
   });
