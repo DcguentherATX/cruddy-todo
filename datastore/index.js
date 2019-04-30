@@ -57,7 +57,7 @@ exports.readOne = (id, callback) => {
   // utf8, prevents the return of a buffer. 
   fs.readFile(path, 'utf8', (err, todoFile) => { 
     if (err) { 
-      callback(err); 
+      callback(err, `file does not exist`); 
     } else { 
       let fileObj = {
         id: id,
@@ -69,24 +69,35 @@ exports.readOne = (id, callback) => {
 };
 
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+  let path = `${exports.dataDir}/${id}.txt`; 
+
+  fs.readFile(path, 'utf8', (err) => { 
+    if (err) { 
+      callback (err, `invalid index`);
+    } else { 
+      fs.writeFile(path, text, (err) => { 
+        // console.log(path, `file from readFile to write`)
+        if (err) { 
+          throw (err, `error saving todo`); 
+        } else { 
+          callback(null, { id, text}); 
+        }
+      }); 
+    }
+  }); 
+  // callback(null, { id, text });
 };
 
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+  let path = `${exports.dataDir}/${id}.txt`; 
+  fs.unlink(path, (err) => { 
+    // console.log(path, `file from readFile to write`)
+    if (err) { 
+      callback (err, `error saving todo`); 
+    } else { 
+      callback(null); 
+    }
+  }); 
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
