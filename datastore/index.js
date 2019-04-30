@@ -45,25 +45,27 @@ exports.readAll = (callback) => {
         }; 
         fileArray.push(fileObj);
       } 
-      callback(null, fileArray);
-      console.log(`read All`, fileArray);
+    } 
+    callback(null, fileArray);
+  });
+}; 
+
+exports.readOne = (id, callback) => { 
+  let path = `${exports.dataDir}/${id}.txt`; 
+  // console.log(`${exports.dataDir}/${id}`) 
+
+  // utf8, prevents the return of a buffer. 
+  fs.readFile(path, 'utf8', (err, todoFile) => { 
+    if (err) { 
+      callback(err); 
+    } else { 
+      let fileObj = {
+        id: id,
+        text: todoFile
+      }; 
+      callback(null, fileObj); 
     }
   });
-
-
-  var data = _.map(items, (text, id) => {
-    return { id, text };
-  });
-  callback(null, data);
-};
-
-exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
 };
 
 exports.update = (id, text, callback) => {
